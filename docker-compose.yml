@@ -1,0 +1,28 @@
+
+services:
+  database:
+    image: postgres:11
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=finance_db
+    networks:
+      - some-net
+  
+  app:
+    build: .
+    command: sh -c "uvicorn app:app --host 0.0.0.0 --port 5000 --reload"
+    volumes:
+      - .:/code
+    ports:
+      - "5000:5000"
+    depends_on:
+      - database
+    networks:
+      - some-net
+
+networks:
+  some-net:
+    driver: bridge
